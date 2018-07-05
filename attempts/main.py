@@ -19,18 +19,8 @@ import pickle
 import cv2
 import os
 
-print('[info] Imported everything, yay')
+print('[info] imported everything, yay')
 
-#ap = argparse.ArgumentParser()
-#ap.add_argument("-d", "--dataset", required = True, 
-#                help = "path to input dataset")
-#ap.add_argument("-m", "--model", required = True,
-#               help = "path to output model")
-#ap.add_argument("-l", "--labelbin", required = True,
-#               help = "path to output label binarizer")
-#ap.add_argument("-p", "--plot", type = str, default = "plot.png",
-#                help = "path to output accuracy")
-#args = vars(ap.parse_args())
 args = {
     "dataset": "D:\\Uni\\TU\\DL\\project\\florec\\dataset",
     "model": "D:\\Uni\\TU\\DL\\project\\florec\\florec.model",
@@ -39,10 +29,10 @@ args = {
 }
 
 # the fun part
-EPOCHS = 10
+EPOCHS = 25
 INIT_LR = 1e-3 # initial learning rate (Adam will handle it later)
-BS = 32 # batch  size
-IMAGE_DIMS = (96, 96, 3)
+BS = 16 # batch  size
+IMAGE_DIMS = (120, 120, 3)
 
 #initialize data labels
 data = []
@@ -106,3 +96,5 @@ plt.title("Training Loss and Accuracy")
 plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
 plt.legend(loc="upper left")
+plt.show()
+plt.savefig(args["plot"])
