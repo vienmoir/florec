@@ -1,10 +1,11 @@
 # coding: utf-8
-from mynet import MyNet
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# from mynet import MyNet
+from flonet import FloNet
+from cropim import CropIm
+
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.preprocessing.image import img_to_array
@@ -17,6 +18,8 @@ import random
 import pickle
 import cv2
 import os
+
+print('[info] Imported everything, yay')
 
 #ap = argparse.ArgumentParser()
 #ap.add_argument("-d", "--dataset", required = True, 
@@ -45,11 +48,12 @@ IMAGE_DIMS = (96, 96, 3)
 data = []
 labels = []
 
-print("[info] loading images...")
+print("[info] loading paths...")
 imagePaths = sorted(list(paths.list_images(args["dataset"])))
 random.seed(42)
 random.shuffle(imagePaths)
 
+print('[info] loading images...')
 for imagePath in imagePaths:
     image = cv2.imread(imagePath)
    # print(imagePath)
@@ -59,6 +63,7 @@ for imagePath in imagePaths:
     
     label = imagePath.split(os.path.sep)[-2]
     labels.append(label)
+print('[info] images collected')
 
 data = np.array(data, dtype = "float") / 255.0
 labels = np.array(labels)
@@ -76,7 +81,7 @@ aug = ImageDataGenerator(rotation_range = 25, width_shift_range = 0.1,
                          fill_mode = "nearest")
 
 print("[info] compiling model...")
-model = MyNet.build(width = IMAGE_DIMS[1], height = IMAGE_DIMS[0],
+model = FloNet.build(width = IMAGE_DIMS[1], height = IMAGE_DIMS[0],
                    depth = IMAGE_DIMS[2], classes = len(lb.classes_))
 opt = Adam(lr= INIT_LR, decay = INIT_LR / EPOCHS)
 model.compile(loss = "categorical_crossentropy", optimizer = opt,

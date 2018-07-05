@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-def cropim(path):
+def CropIm(path):
 	img = cv2.imread(path,3) #read img
 	b,g,r = cv2.split(img)
 	img = cv2.merge([r,g,b]) # revert to rgb
