@@ -45,7 +45,7 @@ random.shuffle(imagePaths)
 
 print('[info] loading images...')
 for imagePath in imagePaths:
-    image = cv2.imread(imagePath)
+    image = CropIm(imagePath)
    # print(imagePath)
     image = cv2.resize(image, (IMAGE_DIMS[1], IMAGE_DIMS[0]))
     image = img_to_array(image)

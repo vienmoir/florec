@@ -56,6 +56,28 @@ class FloNet:
         model.add(BatchNormalization(axis = chanDim))
         model.add(MaxPooling2D(pool_size = (2, 2)))
         model.add(Dropout(0.25))
+
+        # (Conv -> ReLU) x 2 -> Pool
+        # more filters?
+        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Activation("relu"))
+        model.add(BatchNormalization(axis = chanDim))
+        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Activation("relu"))
+        model.add(BatchNormalization(axis = chanDim))
+        model.add(MaxPooling2D(pool_size = (2, 2)))
+        model.add(Dropout(0.25))
+
+        # (Conv -> ReLU) x 2 -> Pool
+        # more filters?
+        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Activation("relu"))
+        model.add(BatchNormalization(axis = chanDim))
+        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Activation("relu"))
+        model.add(BatchNormalization(axis = chanDim))
+        model.add(MaxPooling2D(pool_size = (2, 2)))
+        model.add(Dropout(0.25))
         
         # FC -> ReLU -> Softmax
         model.add(Flatten())
