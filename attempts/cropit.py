@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-img = cv2.imread('..\\testim\\sc.jpg',3) #read img
+img = cv2.imread('..\\testim\\fs.jpg',3) #read img
 b,g,r = cv2.split(img)
 img = cv2.merge([r,g,b]) # revert to rgb
 edges = cv2.Canny(img, 200,400) # apply canny

@@ -59,10 +59,13 @@ class FloNet:
 
         # (Conv -> ReLU) x 2 -> Pool
         # more filters?
-        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Conv2D(256, (3, 3), padding = "same"))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis = chanDim))
-        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Conv2D(256, (3, 3), padding = "same"))
+        model.add(Activation("relu"))
+        model.add(BatchNormalization(axis = chanDim))
+        model.add(Conv2D(256, (3, 3), padding = "same"))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis = chanDim))
         model.add(MaxPooling2D(pool_size = (2, 2)))
@@ -70,10 +73,13 @@ class FloNet:
 
         # (Conv -> ReLU) x 2 -> Pool
         # more filters?
-        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Conv2D(512, (3, 3), padding = "same"))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis = chanDim))
-        model.add(Conv2D(128, (3, 3), padding = "same"))
+        model.add(Conv2D(512, (3, 3), padding = "same"))
+        model.add(Activation("relu"))
+        model.add(BatchNormalization(axis = chanDim))
+        model.add(Conv2D(512, (3, 3), padding = "same"))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis = chanDim))
         model.add(MaxPooling2D(pool_size = (2, 2)))

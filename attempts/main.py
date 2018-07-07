@@ -29,7 +29,7 @@ args = {
 }
 
 # the fun part
-EPOCHS = 25
+EPOCHS = 50
 INIT_LR = 1e-3 # initial learning rate (Adam will handle it later)
 BS = 16 # batch  size
 IMAGE_DIMS = (120, 120, 3)
@@ -95,6 +95,6 @@ plt.plot(np.arange(0, N), H.history["val_acc"], label="val_acc")
 plt.title("Training Loss and Accuracy")
 plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
-plt.legend(loc="upper left")
+plt.legend(loc="upper right")
 plt.show()
 plt.savefig(args["plot"])
