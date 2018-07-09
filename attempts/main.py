@@ -29,7 +29,7 @@ args = {
 }
 
 # the fun part
-EPOCHS = 50
+EPOCHS = 200
 INIT_LR = 1e-3 # initial learning rate (Adam will handle it later)
 BS = 16 # batch  size
 IMAGE_DIMS = (120, 120, 3)
@@ -65,10 +65,10 @@ labels = lb.fit_transform(labels)
 (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = 0.1, 
                                                   random_state = 42)
 
-aug = ImageDataGenerator(rotation_range = 25, width_shift_range = 0.1,
+aug = ImageDataGenerator(rotation_range=90, width_shift_range = 0.1,
                        height_shift_range = 0.1, shear_range = 0.2, 
                         zoom_range = 0.2, horizontal_flip = True, 
-                         fill_mode = "nearest")
+                        vertical_flip = True, fill_mode = "nearest")
 
 print("[info] compiling model...")
 model = FloNet.build(width = IMAGE_DIMS[1], height = IMAGE_DIMS[0],
@@ -83,6 +83,7 @@ H = model.fit_generator(aug.flow(trainX, trainY, batch_size = BS),
                        validation_data = (testX, testY),
                        steps_per_epoch = len(trainX) // BS,
                        epochs = EPOCHS, verbose = 2)
+model.save_weights('first_try.h5')
 
 # plot the training loss and accuracy
 plt.style.use("ggplot")
@@ -98,3 +99,13 @@ plt.ylabel("Loss/Accuracy")
 plt.legend(loc="upper right")
 plt.show()
 plt.savefig(args["plot"])
+
+# save the model to disks
+print("[info] serializing network...")
+model.save(args["model"])
+ 
+# save the label binarizer to disk
+print("[info] serializing label binarizer...")
+f = open(args["labelbin"], "wb")
+f.write(pickle.dumps(lb))
+f.close()
