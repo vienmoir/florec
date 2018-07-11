@@ -31,3 +31,4 @@ dataset/tilia_cordata/tilia_cordata_005.png
 dataset/tilia_cordata/tilia_cordata_153.png
 attempts/token.py
 attempts/tkn.txt
+*.pyc
