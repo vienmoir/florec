@@ -1,3 +1,9 @@
+dataset
+dataset/tkn.txt
+testset
+model
+results
+
 # Windows thumbnail cache files
 Thumbs.db
 ehthumbs.db
