@@ -35,10 +35,9 @@ def get_image(bot, update):
         ]))
     label, prob = Classify(img, model, lb)
     print("success")
-    result = label.replace("_", "")
+    result = label.replace("_", " ")
     result = result.capitalize()
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("I am %d confident this is %s" % (prob, result))
+    update.message.reply_text("I am %d%% confident this is %s" % (prob, result))
 
 
 def reply_text(bot, update):
@@ -71,5 +70,5 @@ def main():
 if __name__ == '__main__':
     print("I'm here")
     model, lb = LoadModel()
-    print("loaded model")
+    print("ok")
     main()
