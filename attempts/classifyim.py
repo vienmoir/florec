@@ -9,16 +9,18 @@ import pickle
 import cv2
 import os
 
-def Classify(img, model, lb):
-	image = CropIm(path)
-	output = cv2.imread(path,3)
+def Classify(image, model, lb):
 	image = cv2.resize(image, (120, 120))
 	image = image.astype("float") / 255.0
 	image = img_to_array(image)
 	image = np.expand_dims(image, axis=0)
 	print("[info] classifying image...")
 	proba = model.predict(image)[0]
+	print("[info] classified")
 	idx = np.argmax(proba)
+	print("done")
 	label = lb.classes_[idx]
+	print("alright")
+	print(label)
 	prob = proba[idx] * 100
 	return label, prob

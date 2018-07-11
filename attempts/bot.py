@@ -5,7 +5,8 @@ import os
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from loadmodel import LoadModel
-from cropim import CropIM
+from cropim import CropIm
+from classifyim import Classify
 
 import random
 
@@ -21,48 +22,24 @@ def start(bot, update):
     update.message.reply_text('Send me a picture of a tree inflorescence, please. I will use it to determine a tree species :)')
 
 def get_image(bot, update):
+    global model, lb
     file_id = update.message.photo[-1].file_id
     photo = bot.getFile(file_id)
     photo.download(file_id+'.png')
     img = CropIm(file_id+'.png')
     os.remove(file_id+'.png')
-    if type(img) != str:
-        update.message.reply_text(random.choice([
-            'Recognition in progress',
-            "One moment, I'll check what tree is that",
-            'Processing...',
+    update.message.reply_text(random.choice([
+        'Recognition in progress',
+        "One moment, I'll check what tree is that",
+        'Processing...'
         ]))
-        features = process(checkedImage,cnt,coord)
-        result1, result2, result3 = classify(features)
-        if result3 == 0:
-            if result2 == 0:
-                keyboard = [[InlineKeyboardButton(result1.capitalize(), 
-                                                  callback_data=result1)]]
-                reply_markup = InlineKeyboardMarkup(keyboard)
-                update.message.reply_text('This is most probably ' + result1 +
-                                          '. More info on it:', reply_markup=reply_markup)
-            else:
-                keyboard = [[InlineKeyboardButton(result1.capitalize(),
-                                                  callback_data=result1)],
-                [InlineKeyboardButton(result2.capitalize(),
-                                      callback_data=result2)]]
-                reply_markup = InlineKeyboardMarkup(keyboard)
-                update.message.reply_text('This is either ' + result1 + ' or ' + 
-                                      result2 + '. More details:', 
-                                      reply_markup=reply_markup)
-        else:
-            keyboard = [[InlineKeyboardButton(result1.capitalize(),
-                                              callback_data=result1)],
-                 [InlineKeyboardButton(result2.capitalize(),
-                                      callback_data=result2)],
-                 [InlineKeyboardButton(result3.capitalize(),
-                                      callback_data=result3)]]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            update.message.reply_text('It looks like ' + result1 + ' or '
-                                          + result2 + '. But it might also be ' +
-                                          result3 + "! Read more:", reply_markup=reply_markup)
-    else:
-        update.message.reply_text(checkedImage)
+    label, prob = Classify(img, model, lb)
+    print("success")
+    result = label.replace("_", "")
+    result = result.capitalize()
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text("I am %d confident this is %s" % (prob, result))
+
 
 def reply_text(bot, update):
     update.message.reply_text(random.choice([
@@ -73,52 +50,26 @@ def reply_text(bot, update):
 
 def howto(bot, update):
     h = """
-    Go to the tree you wish to recognize (it's better to do in spring!)\n Take a nice shot of the inflorescence. \nMake sure there are no foreign objects on the image.
+    Go to the tree you wish to recognize (it's better to do in spring!)\nTake a nice shot of the inflorescence. \nMake sure there are no foreign objects on the image.
     Good luck!
     """
     update.message.reply_text(h)
 
-def trees_list(bot, update):
-    myfile = open("trees.txt")
-    msg = myfile.read()
-    myfile.close()
-    keyboard = map(create_button, msg.split('\n'))
-    keyboard = keyboard[1:20]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    update.message.reply_text(u'List of trees:', reply_markup=reply_markup)
-
-def create_button(name):
-    return InlineKeyboardButton(name.capitalize(), callback_data = name),
-
-def on_press_button(bot, update):
-    query = update.callback_query
-
-    myfile = open(u"trees/" + query.data + ".txt")
-    msg = myfile.read()
-    myfile.close()
-
-    bot.edit_message_text(text=msg,
-                          chat_id=query.message.chat_id,
-                          message_id=query.message.message_id)
-
-#def get_files(bot, update):
-#    msg = os.listdir('/home/ifmoadmin')
-#    update.message.reply_text(msg)
-
 def main():
-    updater = Updater('545225881:AAElIAyqmY6P_DYExioLMO3r6fkgC7N-KkQ')
+    token = open("tkn.txt")
+    t = token.read()
+    token.close()
+    updater = Updater(t)
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('help',help))
     updater.dispatcher.add_handler(CommandHandler('howto', howto))
-    updater.dispatcher.add_handler(CallbackQueryHandler(on_press_button))
-#    updater.dispatcher.add_handler(CommandHandler('get_files', get_files))
-    updater.dispatcher.add_handler(CommandHandler('trees_list', trees_list))
     updater.dispatcher.add_handler(MessageHandler(filters.Filters.photo, get_image))
     updater.dispatcher.add_handler(MessageHandler(filters.Filters.text, reply_text))
     updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
-    main()
+    print("I'm here")
     model, lb = LoadModel()
+    print("loaded model")
+    main()
