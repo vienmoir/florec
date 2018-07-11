@@ -10,7 +10,7 @@ import cv2
 import os
 
 # load the image
-path = '..\\testim\\malus_domestica_2.jpg'
+path = '..\\testim\\tilia_cordata\\tilia_cordata_164.jpg'
 image = CropIm(path)
 output = cv2.imread(path,3)
  
@@ -22,8 +22,8 @@ image = np.expand_dims(image, axis=0)
 # load the trained convolutional neural network and the label
 # binarizer
 print("[info] loading network...")
-model = load_model('..\\model\\3c98a.model')
-lb = pickle.loads(open('..\\model\\3c98a.pickle', "rb").read())
+model = load_model('..\\model\\5c85a.model')
+lb = pickle.loads(open('..\\model\\5c85a.pickle', "rb").read())
  
 # classify the input image
 print("[info] classifying image...")
@@ -45,6 +45,6 @@ cv2.putText(output, label, (10, 25),  cv2.FONT_HERSHEY_SIMPLEX,
  
 # show the output image
 print("[INFO] {}".format(label))
-cv2.imwrite("..\\results\\classify\\malus_domestica_2.png", output)
+cv2.imwrite("..\\results\\classify\\aesc1.png", output)
 cv2.imshow("Output", output)
 cv2.waitKey(0)
