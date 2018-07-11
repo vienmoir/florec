@@ -9,7 +9,7 @@ import pickle
 import cv2
 import os
 
-def Classify(path, model, lb):
+def Classify(img, model, lb):
 	image = CropIm(path)
 	output = cv2.imread(path,3)
 	image = cv2.resize(image, (120, 120))
