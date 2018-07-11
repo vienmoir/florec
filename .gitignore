@@ -26,3 +26,4 @@ $RECYCLE.BIN/
 *.h5
 model/3c98a.model
 *.pickle
+*.model
