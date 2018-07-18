@@ -6,7 +6,7 @@ import pickle
 
 def LoadModel():
 	print("[info] loading network...")
-	model = load_model('..\\model\\5c85a.model')
-	lb = pickle.loads(open('..\\model\\5c85a.pickle', "rb").read())
+	model = load_model('..\\model\\6c79a200e.model')
+	lb = pickle.loads(open('..\\model\\6c79a200e.pickle', "rb").read())
 	print("model loaded")
 	return model, lb

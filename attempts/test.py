@@ -6,7 +6,7 @@ print("I'm here")
 model, lb = LoadModel()
 def get_image():
     global model, lb
-    img = CropIm("..\\testim\\malus_domestica.jpg")
+    img = CropIm("..\\testim\\acer_platanoides__03.jpg")
     label, prob = Classify(img, model, lb)
     print("success")
     result = label.replace("_", " ")
