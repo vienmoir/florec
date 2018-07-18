@@ -26,7 +26,7 @@ datagen = ImageDataGenerator(rotation_range = 90, width_shift_range = 0.1,
 # # y = y.reshape((1,) + y.shape) 
 # # print(y.shape) # this is a Numpy array with shape (1, 3, 150, 150)
 args = {
-    "dataset": "D:\\Uni\\TU\\DL\\project\\florec\\testim",
+    "dataset": "D:\\Uni\\TU\\DL\\project\\florec\\testim\\aug",
     "model": "D:\\Uni\\TU\\DL\\project\\florec\\florec.model",
     "labelbin": "D:\\Uni\\TU\\DL\\project\\florec\\lb.pickle",
     "plot": "D:\\Uni\\TU\\DL\\project\\florec\\plot.png"

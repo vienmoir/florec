@@ -13,7 +13,7 @@ from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
 from imutils import paths
 import numpy as np
-import argparse
+#import argparse
 import random
 import pickle
 import cv2
@@ -22,14 +22,15 @@ import os
 print('[info] imported everything, yay')
 
 args = {
-    "dataset": "D:\\Uni\\TU\\DL\\project\\florec\\dataset",
-    "model": "D:\\Uni\\TU\\DL\\project\\florec\\florec.model",
-    "labelbin": "D:\\Uni\\TU\\DL\\project\\florec\\lb.pickle",
-    "plot": "D:\\Uni\\TU\\DL\\project\\florec\\plot.png"
+    "dataset": "..\\dataset",
+    "model": "..\\florec.model",
+    "labelbin": "..\\lb.pickle",
+    "lplot": "..\\lplot.png",
+    "aplot": "..\\aplot.png"
 }
 
 # the fun part
-EPOCHS = 200
+EPOCHS = 100
 INIT_LR = 1e-3 # initial learning rate (Adam will handle it later)
 BS = 16 # batch  size
 IMAGE_DIMS = (120, 120, 3)
@@ -67,8 +68,8 @@ labels = lb.fit_transform(labels)
 
 aug = ImageDataGenerator(rotation_range=90, width_shift_range = 0.1,
                        height_shift_range = 0.1, shear_range = 0.2, 
-                        zoom_range = 0.2, horizontal_flip = True, 
-                        vertical_flip = True, fill_mode = "nearest")
+                       horizontal_flip = True, vertical_flip = True,
+                       fill_mode = "nearest")
 
 print("[info] compiling model...")
 model = FloNet.build(width = IMAGE_DIMS[1], height = IMAGE_DIMS[0],
@@ -83,22 +84,32 @@ H = model.fit_generator(aug.flow(trainX, trainY, batch_size = BS),
                        validation_data = (testX, testY),
                        steps_per_epoch = len(trainX) // BS,
                        epochs = EPOCHS, verbose = 2)
-model.save_weights('first_try.h5')
+#model.save_weights('first_try.h5')
 
 # plot the training loss and accuracy
 plt.style.use("ggplot")
 plt.figure()
 N = EPOCHS
 plt.plot(np.arange(0, N), H.history["loss"], label="train_loss")
-plt.plot(np.arange(0, N), H.history["val_loss"], label="val_loss")
-plt.plot(np.arange(0, N), H.history["acc"], label="train_acc")
-plt.plot(np.arange(0, N), H.history["val_acc"], label="val_acc")
-plt.title("Training Loss and Accuracy")
+plt.plot(np.arange(0, N), H.history["val_loss"], label="test_loss")
+plt.title("Training Loss")
 plt.xlabel("Epoch #")
-plt.ylabel("Loss/Accuracy")
+plt.ylabel("Loss")
 plt.legend(loc="upper right")
 plt.show()
-plt.savefig(args["plot"])
+plt.savefig(args["lplot"])
+
+plt.style.use("ggplot")
+plt.figure()
+N = EPOCHS
+plt.plot(np.arange(0, N), H.history["acc"], label="train_acc")
+plt.plot(np.arange(0, N), H.history["val_acc"], label="test_acc")
+plt.title("Training Accuracy")
+plt.xlabel("Epoch #")
+plt.ylabel("Accuracy")
+plt.legend(loc="upper right")
+plt.show()
+plt.savefig(args["aplot"])
 
 # save the model to disks
 print("[info] serializing network...")

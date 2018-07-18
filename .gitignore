@@ -1,3 +1,9 @@
+dataset
+dataset/tkn.txt
+testset
+model
+results
+
 # Windows thumbnail cache files
 Thumbs.db
 ehthumbs.db
@@ -26,3 +32,9 @@ $RECYCLE.BIN/
 *.h5
 model/3c98a.model
 *.pickle
+*.model
+dataset/tilia_cordata/tilia_cordata_005.png
+dataset/tilia_cordata/tilia_cordata_153.png
+attempts/token.py
+attempts/tkn.txt
+*.pyc
