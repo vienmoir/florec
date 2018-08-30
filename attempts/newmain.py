@@ -6,10 +6,8 @@ import matplotlib.pyplot as plt
 from newnet import FloNet
 from cropim import CropIm
 
-
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
-from keras.callbacks import Callback
 from keras.preprocessing.image import img_to_array
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
@@ -21,26 +19,6 @@ import pickle
 import cv2
 import os
 
-# confusion matrix
-from sklearn.metrics import confusion_matrix
-import itertools
-
-class TestCallback(Callback):
-    def __init__(self, max_epoch):
-        self.max_epoch = max_epoch
-
-    def on_epoch_end(self, epoch, logs={}):
-        #testX, testY = self.test_data
-        #val_loss, val_acc = self.model.evaluate(testX, testY, verbose=2)
-
-        if self.max_epoch - (epoch+1) < 5:
-            print('\nTesting epoch: {}\n'.format(epoch))
-            print(logs)
-            log = logs.copy()
-            model_metrics.append(log)
-            #self.model.save("..\\florec_{0}.model".format(5-self.max_epoch - (epoch+1)))
-
-
 print('[info] imported everything, yay')
 
 args = {
@@ -48,16 +26,17 @@ args = {
     "model": "..\\florec.model",
     "labelbin": "..\\lb.pickle",
     "lplot": "..\\lvgg19.png",
-    "aplot": "..\\lvgg19.png"
+    "aplot": "..\\avgg19.png",
+    "confm_train": "..\\confm_train.png",
+    "confm_test": "..\\confm_test.png",
+    "confm_all": "..\\confm_all.png",
+    "confm_normal": "..\\confm_normal.png"
 }
-
-
-model_metrics = []
 
 # the fun part
 EPOCHS = 50
 INIT_LR = 1e-3 # initial learning rate (Adam will handle it later)
-BS = 16 # batch  size
+BS = 8 # batch  size
 IMAGE_DIMS = (90, 90, 3)
 
 #initialize data labels
@@ -135,6 +114,94 @@ plt.ylabel("Accuracy")
 plt.legend(loc="upper right")
 plt.show()
 plt.savefig(args["aplot"])
+
+def plot_confusion_matrix(cm, classes, save_path, normalize = False, title = "Confusion matrix",
+cmap = plt.get_cmap('Purples')):
+
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting mormile = true
+    """
+    plt.style.use("ggplot")
+    plt.figure()
+    plt.imshow(cm, interpolation="nearest", cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation = 45)
+    plt.yticks(tick_marks, classes)
+
+    if normalize:
+        cm = (cm.astype('float') / cm.sum(axis=1)[:,np.newaxis]).round(2)
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix without normalization')
+
+    print(cm)
+
+    tresh =  cm.max() / 2
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i,j],
+                horizontalalignment = "center",
+                color = "white" if cm[i, j] > tresh else "black")
+    plt.tight_layout()
+    plt.ylabel("True label")
+    plt.xlabel("Predicted label")
+    plt.savefig(save_path)
+
+# calculate confusion matrix
+
+## generator = aug.flow(testX, testY, batch_size = BS)
+
+# y_true  = model.targets[0]
+# print(y_true.axis(1))
+# y_pred = model.outputs[0]
+# print(y_pred.axis(1))
+# cm = confusion_matrix(np.array(y_true), np.array(y_pred))
+# predY = model.predict_generator(generator, verbose = 2)
+predY = model.predict(testX, verbose = 2)
+cm = confusion_matrix(testY.argmax(axis=1), predY.argmax(axis=1))
+cm_plot_labels = lb.classes_
+plot_confusion_matrix(cm, cm_plot_labels, save_path = args["confm_normal"], normalize= True, title="Confusion Matrix")
+
+predY = model.predict(testX, verbose = 2)
+cm = confusion_matrix(testY.argmax(axis=1), predY.argmax(axis=1))
+plot_confusion_matrix(cm, cm_plot_labels, save_path = args["confm_test"], title="Confusion Matrix Test")
+
+predY = model.predict(trainX, verbose = 2)
+cm = confusion_matrix(trainY.argmax(axis=1), predY.argmax(axis=1))
+plot_confusion_matrix(cm, cm_plot_labels, save_path = args["confm_train"], title="Confusion Matrix Train")
+
+
+predY = model.predict(np.vstack((trainX, testX)), verbose = 2)
+cm = confusion_matrix(np.vstack((trainY, testY)).argmax(axis=1), predY.argmax(axis=1))
+plot_confusion_matrix(cm, cm_plot_labels, save_path = args["confm_all"], title="Confusion Matrix All")
+
+# calculate average loss and accuracy for the last 5 training and test data
+
+loss = 0
+val_loss = 0
+acc = 0
+val_acc = 0
+
+log_count = float(len(model_metrics))
+
+print(model_metrics)
+
+for log in model_metrics:
+    loss += log['loss']
+    val_loss += log['val_loss']
+    acc += log['acc']
+    val_acc += log['val_acc']
+
+loss_avr = loss / log_count
+acc_avr = acc / log_count
+val_loss_avr = val_loss / log_count
+val_acc_avr = val_acc / log_count
+
+print('\n\nloss: {0}, acc: {1}, val_loss: {2}, val_acc: {3}, count{4}\n'.format(loss, acc, val_loss, val_acc, log_count))
+print('\nAverage training loss: {}, acc: {}\n'.format(loss_avr, acc_avr))
+print('\nAvarage testing val_loss: {}, val_acc: {}\n'.format(val_loss_avr, val_acc_avr))
 
 # save the model to disks
 #print("[info] serializing network...")
