@@ -56,7 +56,7 @@ def howto(bot, update):
     update.message.reply_text(h)
 
 def main():
-    token = open("tkn.txt")
+    token = open("t.txt")
     t = token.read()
     token.close()
     updater = Updater(t)

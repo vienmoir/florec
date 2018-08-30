@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from flonet import FloNet
+from newnet import FloNet
 from cropim import CropIm
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -25,8 +25,8 @@ args = {
     "dataset": "..\\floral",
     "model": "..\\florec.model",
     "labelbin": "..\\lb.pickle",
-    "lplot": "..\\lrelu.png",
-    "aplot": "..\\arelu.png"
+    "lplot": "..\\lxprelu.png",
+    "aplot": "..\\axprelu.png"
 }
 
 # the fun part

@@ -10,6 +10,7 @@ from keras.layers.core import Dropout
 from keras.layers.core import Dense
 from keras.layers.advanced_activations import PReLU
 
+
 class FloNet:
     @staticmethod
     def build(width, height, depth, classes):
@@ -86,9 +87,14 @@ class FloNet:
         model.add(MaxPooling2D(pool_size = (2, 2)))
         model.add(Dropout(0.25))
         
-        # FC -> ReLU -> Softmax
+        # FC -> PReLU -> Softmax
+
         model.add(Flatten())
-        model.add(Dense(1024))
+        model.add(Dense(4096))
+        model.add(PReLU())
+        model.add(BatchNormalization())
+        model.add(Dropout(0.5))
+        model.add(Dense(4096))
         model.add(PReLU())
         model.add(BatchNormalization())
         model.add(Dropout(0.5))
