@@ -4,18 +4,9 @@
 import os
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from loadmodel import LoadModel
+#from loadmodel import LoadModel
 from cropim import CropIm
-#from classifyim import Classify
-# coding: utf-8
-from keras.preprocessing.image import img_to_array
-#from keras.models import load_model
-from cropim import CropIm
-import numpy as np
-#import argparse
-import imutils
-import pickle
-import cv2
+from classifyim import Classify
 
 import random
 
@@ -47,26 +38,22 @@ def get_image(bot, update):
         "One moment, I'll check what tree is that",
         'Processing...'
         ]))
-    #label, prob = Classify(img)
+    label, prob = Classify(img)
     #label, prob = Classify(img, model, lb)
-    image = cv2.resize(img, (120, 120))
-    #print(image.shape)
-    print(lb.classes_)
-    image = image.astype("float") / 255.0
-    image = img_to_array(image)
-    image = np.expand_dims(image, axis=0)
-    print("[info] classifying image...")
-    predict = model.predict(image)
-    print("predicted")
-    proba = predict[0]
-    print("[info] classified")
-    idx = np.argmax(proba)
-    print("done")
-    label = lb.classes_[idx]
-    print("alright")
-    print(label)
-    prob = proba[idx] * 100
-    print("success")s
+    # image = cv2.resize(img, (120, 120))
+    # #print(image.shape)
+    # print(lb.classes_)
+    # image = image.astype("float") / 255.0
+    # image = img_to_array(image)
+    # image = np.expand_dims(image, axis=0)
+    # print("[info] classifying image...")
+    # predict = model.predict(image)
+    # print("predicted")
+    # proba = predict[0]
+    # idx = np.argmax(proba)
+    # label = lb.classes_[idx]
+    # print(label)
+    # prob = proba[idx] * 100
     result = label.replace("_", " ")
     result = result.capitalize()
     update.message.reply_text("I am %d%% confident this is %s" % (prob, result))
@@ -101,6 +88,5 @@ def main():
 
 if __name__ == '__main__':
     print("I'm here")
-    model, lb = LoadModel()
-    print("ok")
+   # model, lb = LoadModel()
     main()
