@@ -19,10 +19,15 @@ import pickle
 import cv2
 import os
 
+# confusion matrix
+from sklearn.metrics import confusion_matrix
+import itertools
+#
+
 print('[info] imported everything, yay')
 
 args = {
-    "dataset": "..\\floral",
+    "dataset": "..\\dataset",
     "model": "..\\florec.model",
     "labelbin": "..\\lb.pickle",
     "lplot": "..\\lvgg19.png",
@@ -34,9 +39,9 @@ args = {
 }
 
 # the fun part
-EPOCHS = 50
+EPOCHS = 100
 INIT_LR = 1e-3 # initial learning rate (Adam will handle it later)
-BS = 8 # batch  size
+BS = 16 # batch  size
 IMAGE_DIMS = (90, 90, 3)
 
 #initialize data labels
@@ -111,7 +116,7 @@ plt.plot(np.arange(0, N), H.history["val_acc"], label="test_acc")
 plt.title("Training Accuracy")
 plt.xlabel("Epoch #")
 plt.ylabel("Accuracy")
-plt.legend(loc="upper right")
+plt.legend(loc="lower right")
 plt.show()
 plt.savefig(args["aplot"])
 

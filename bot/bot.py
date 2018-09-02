@@ -4,7 +4,7 @@
 import os
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-#from loadmodel import LoadModel
+from loadmodel import LoadModel
 from cropim import CropIm
 from classifyim import Classify
 
@@ -22,19 +22,24 @@ def start(bot, update):
     update.message.reply_text('Send me a picture of a tree inflorescence, please. I will use it to determine a tree species :)')
 
 def get_image(bot, update):
-   # global model, lb
+    global model, lb
     file_id = update.message.photo[-1].file_id
+    #print("hm")
     photo = bot.getFile(file_id)
+    #print("got it")
     photo.download(file_id+'.png')
+   # print("downloaded")
     img = CropIm(file_id+'.png')
+   # print("cropped")
     os.remove(file_id+'.png')
+    #print("removed")
     update.message.reply_text(random.choice([
         'Recognition in progress',
         "One moment, I'll check what tree is that",
         'Processing...'
         ]))
-    label, prob = Classify(img)
-   # label, prob = Classify(img, model, lb)
+    #label, prob = Classify(img)
+    label, prob = Classify(img, model, lb)
     print("success")
     result = label.replace("_", " ")
     result = result.capitalize()
@@ -70,6 +75,6 @@ def main():
 
 if __name__ == '__main__':
     print("I'm here")
-    #model, lb = LoadModel()
-   # print("ok")
+    model, lb = LoadModel()
+    print("ok")
     main()
