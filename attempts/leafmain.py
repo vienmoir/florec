@@ -28,13 +28,13 @@ print('[info] imported everything, yay')
 
 args = {
     "dataset": "D:\\Uni\\bac\\lvs\\project\\florec",
-    "model": "..\\florec.model",
-    "labelbin": "..\\lb.pickle",
-    "lplot": "..\\lbark.png",
-    "aplot": "..\\abark.png",
-    "confm_train": "..\\confbark_train.png",
-    "confm_test": "..\\confbark_test.png",
-    "confm_all": "..\\confbark_all.png",
+    "model": "..\\leaves.model",
+    "labelbin": "..\\leavesb.pickle",
+    "lplot": "..\\ll100.png",
+    "aplot": "..\\al100.png",
+    "confm_train": "..\\confl100_train.png",
+    "confm_test": "..\\confl100_test.png",
+    "confm_all": "..\\confl100_all.png",
     "confm_normal": "..\\confbark_normal.png"
 }
 
@@ -55,7 +55,7 @@ random.shuffle(imagePaths)
 
 print('[info] loading images...')
 for imagePath in imagePaths:
-    image = CropIm(imagePath)
+    image = cv2.imread(imagePath,3)
    # print(imagePath)
     image = cv2.resize(image, (IMAGE_DIMS[1], IMAGE_DIMS[0]))
     image = img_to_array(image)
@@ -75,9 +75,7 @@ labels = lb.fit_transform(labels)
 (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size = 0.1, 
                                                   random_state = 42)
 
-aug = ImageDataGenerator(rotation_range=90, width_shift_range = 0.1,
-                       height_shift_range = 0.1, shear_range = 0.2, 
-                       horizontal_flip = True, vertical_flip = True,
+aug = ImageDataGenerator(rotation_range=360, horizontal_flip = True, vertical_flip = True,
                        fill_mode = "nearest")
 
 print("[info] compiling model...")
@@ -209,11 +207,11 @@ print('\nAverage training loss: {}, acc: {}\n'.format(loss_avr, acc_avr))
 print('\nAvarage testing val_loss: {}, val_acc: {}\n'.format(val_loss_avr, val_acc_avr))
 
 # save the model to disks
-#print("[info] serializing network...")
-#model.save(args["model"])
+print("[info] serializing network...")
+model.save(args["model"])
  
 # save the label binarizer to disk
-#print("[info] serializing label binarizer...")
-#f = open(args["labelbin"], "wb")
-#f.write(pickle.dumps(lb))
-#f.close()
+print("[info] serializing label binarizer...")
+f = open(args["labelbin"], "wb")
+f.write(pickle.dumps(lb))
+f.close()

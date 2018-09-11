@@ -39,11 +39,14 @@ def get_image(bot, update):
         'Processing...'
         ]))
     #label, prob = Classify(img)
-    label, prob = Classify(img, model, lb)
+    first, second, third = Classify(img, model, lb)
     print("success")
-    result = label.replace("_", " ")
-    result = result.capitalize()
-    update.message.reply_text("I am %d%% confident this is %s" % (prob, result))
+    if first == "none"
+        update.message.reply_text("I'm not sure what is it. Please, try another image1")
+    else:
+        result = label.replace("_", " ")
+        result = result.capitalize()
+        update.message.reply_text("This is most probably %s. It might also be %s or %s, though!" % (first, second, third))
 
 
 def reply_text(bot, update):

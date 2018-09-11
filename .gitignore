@@ -39,3 +39,5 @@ attempts/token.py
 attempts/tkn.txt
 *.pyc
 bot/t.txt
+*.tif
+*.png
