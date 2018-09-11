@@ -7,6 +7,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 #from loadmodel import LoadModel
 from cropim import CropIm
 from classifyim import Classify
+import numpy as np
 
 import random
 
@@ -38,25 +39,27 @@ def get_image(bot, update):
         "One moment, I'll check what tree is that",
         'Processing...'
         ]))
-    label, prob = Classify(img)
-    #label, prob = Classify(img, model, lb)
-    # image = cv2.resize(img, (120, 120))
-    # #print(image.shape)
-    # print(lb.classes_)
-    # image = image.astype("float") / 255.0
-    # image = img_to_array(image)
-    # image = np.expand_dims(image, axis=0)
-    # print("[info] classifying image...")
-    # predict = model.predict(image)
-    # print("predicted")
-    # proba = predict[0]
-    # idx = np.argmax(proba)
-    # label = lb.classes_[idx]
-    # print(label)
-    # prob = proba[idx] * 100
-    result = label.replace("_", " ")
-    result = result.capitalize()
-    update.message.reply_text("I am %d%% confident this is %s" % (prob, result))
+    prob, first, second, third = Classify(img)
+    print("success")
+    if first == "none":
+        update.message.reply_text("I'm not sure what is it. Please, try another image1")
+    else:
+        first = np.array2string(first)
+        first = first.replace("_", " ")
+        first = first.replace("['", "")
+        first = first.replace("']", "")
+        first = first.capitalize()
+        second = np.array2string(second)
+        second = second.replace("_", " ")
+        second = second.replace("['", "")
+        second = second.replace("']", "")
+        second = second.capitalize()
+        third = np.array2string(third)
+        third = third.replace("_", " ")
+        third = third.replace("['", "")
+        third = third.replace("']", "")
+        third = third.capitalize()
+        update.message.reply_text("I am %d%% sure this is %s. It might also be %s or %s, though!" % (prob, first, second, third))
 
 
 def reply_text(bot, update):
