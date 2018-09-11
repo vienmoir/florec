@@ -24,21 +24,15 @@ def start(bot, update):
 def get_image(bot, update):
     global model, lb
     file_id = update.message.photo[-1].file_id
-    #print("hm")
     photo = bot.getFile(file_id)
-    #print("got it")
     photo.download(file_id+'.png')
-   # print("downloaded")
     img = CropIm(file_id+'.png')
-   # print("cropped")
     os.remove(file_id+'.png')
-    #print("removed")
     update.message.reply_text(random.choice([
         'Recognition in progress',
         "One moment, I'll check what tree is that",
         'Processing...'
         ]))
-    #label, prob = Classify(img)
     first, second, third = Classify(img, model, lb)
     print("success")
     if first == "none"

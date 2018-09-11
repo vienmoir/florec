@@ -3,7 +3,6 @@ from keras.preprocessing.image import img_to_array
 from keras.models import load_model
 from cropim import CropIm
 import numpy as np
-#import argparse
 import imutils
 import pickle
 import cv2
@@ -13,17 +12,11 @@ def Classify(image):
 	print("[info] loading network...")
 	model = load_model('..\\model\\10c93a200e.model')
 	lb = pickle.loads(open('..\\model\\10c93a200e.pickle', "rb").read())
-	#print("model loaded")
-	#image = CropIm("..\\testim\\cl.jpg")
 	image = cv2.resize(image, (120, 120))
-	#print(image.shape)
-	#print(lb.classes_)
 	image = image.astype("float") / 255.0
 	image = img_to_array(image)
 	image = np.expand_dims(image, axis=0)
-	#print("[info] classifying image...")
 	predict = model.predict(image)
-	#print("predicted")
 	proba = predict[0]
 	print(proba)
 	idx = np.argmax(proba)
@@ -69,8 +62,6 @@ def Classify(image):
 	    	first = ruix[2]
 	    	second = ruix[1]
 	    	third = ruix[0]
-		#label = lb.classes_[idx]
-		#print(label)
 	    prob = proba[idx] * 100
 	    first = lb.classes_[np.where(proba == first)]
 	    second = lb.classes_[np.where(proba == second)]
